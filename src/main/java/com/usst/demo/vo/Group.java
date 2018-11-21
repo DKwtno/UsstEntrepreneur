@@ -1,12 +1,25 @@
 package com.usst.demo.vo;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 public class Group {
     private Integer captainId,groupId;
+    @NotNull
     private String groupName;
     private Date establishDate;
     private String status;
+    private List<User> members;
+    private String introduction;
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
 
     public String getStatus() {
         return status;
@@ -55,6 +68,4 @@ public class Group {
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
     }
-
-    private String introduction;
 }

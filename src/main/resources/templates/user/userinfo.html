@@ -46,7 +46,8 @@
         <td th:text="${userData.grade}"></td>
     </tr>
 </table>
-<a th:if="${session.user!=null}" th:href="${session.user.uid}+'/updatedata'">修改数据</a>
+<!--/*@thymesVar id="webId" type="java.lang.Integer"*/-->
+<a th:if="${session.user ne null and session.user.uid eq webId}" th:href="${session.user.uid}+'/updatedata'">修改数据</a>
 <a th:href="@{/}">返回首页</a>
 </body>
 

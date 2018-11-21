@@ -37,6 +37,7 @@ public class UserDataController {
             System.out.println("错了！userData为空!");
         }
         model.addAttribute("userData",userData);
+        model.addAttribute("webId",id);
         return "/user/userinfo.html";
     }
     @RequestMapping(value = "/updatedata", method = RequestMethod.POST,
