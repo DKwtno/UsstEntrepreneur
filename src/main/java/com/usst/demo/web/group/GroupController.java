@@ -37,6 +37,24 @@ public class GroupController {
         model.addAttribute("grouplist", groups);
         return "/group/mygroup.html";
     }
+
+    @RequestMapping(value = "/{gid}" , method = RequestMethod.GET)
+    public String manageMyGroup(HttpServletRequest request, @PathVariable("gid") Integer groupId){
+        Group group = groupRepository.findGroupByGroupId(groupId);
+        if(!checkLogin(request, group.getCaptainId())){
+            return "redirect:/register";
+        }
+        return "/group/manageGroup.html";
+    }
+
+    private boolean checkLogin(HttpServletRequest request, Integer userId) {
+        User user = (User) request.getSession().getAttribute("user");
+        if(user==null)
+            return  false;
+        return user.getUid()==userId;
+    }
+
+
     @RequestMapping(value = "/setup", method = RequestMethod.GET)
     public String setUpGroup(HttpServletRequest request){
         if(request.getSession().getAttribute("user")==null) {

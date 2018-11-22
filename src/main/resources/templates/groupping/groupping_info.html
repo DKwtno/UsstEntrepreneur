@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>查看组队信息</title>
 </head>
 <body>
-
+<!--/*@thymesVar id="grouppingdata" type="java.util.List<com.usst.demo.vo.Groupping>"*/-->
+<ul th:each="groupping:${grouppingdata}">
+    <li th:text="'队伍编号：'+${groupping.groupId}"></li>
+    <li th:text="'队伍名称：'+${groupping.groupName}"></li>
+    <li th:text="'队伍当前人数：'+${groupping.currentSize}"></li>
+    <li th:text="'队伍最大人数：'+${groupping.maxSize}"></li>
+    <li th:text="'队伍领域标签：'">
+        <ul th:each="tag:${groupping.fieldTags}">
+            <li th:text="${tag.tagId}+'、'+${tag.tagName}"></li>
+        </ul>
+    </li>
+    <li th:text="'队伍所需人才标签：'">
+        <ul th:each="tag:${groupping.personalTags}">
+            <li th:text="${tag.tagId}+'、'+${tag.tagName}"></li>
+        </ul>
+    </li>
+    <a th:href="@{/}">申请加入该组</a>
+</ul>
 </body>
 </html>

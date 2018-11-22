@@ -29,6 +29,32 @@ public class GroupRepository {
         this.jdbc = jdbc;
     }
 
+    public Group findGroupByGroupId(Integer groupId){
+
+        List<Group> list = jdbc.query("select gid,`name`,abstract,establist_date,captain_id," +
+                "cursize from group_info where gid=? ", new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1,groupId);
+            }
+        }, new RowMapper<Group>() {
+            @Override
+            public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Group group = new Group();
+                group.setGroupId(rs.getInt(1));
+                group.setGroupName(rs.getString(2));
+                group.setIntroduction(rs.getString(3));
+                group.setEstablishDate(rs.getDate(4));
+                group.setCaptainId(rs.getInt(5));
+                return group;
+            }
+        });
+        if(list.size()==1){
+            list.get(0).setMembers(findMemebersByGroupId(groupId));
+        }
+        return list==null||list.size()==0?null:list.get(0);
+    }
+
     public List<Group> findAgreedGroupsByUserId(Integer userId){
         return jdbc.query("select g.gid, g.name, g.captain_id,g.establish_date from " +
                 "group_info g inner join group_user_taken gu on g.gid=gu.gid where gu.uid=? " +

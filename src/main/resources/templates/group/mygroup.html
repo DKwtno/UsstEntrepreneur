@@ -12,8 +12,11 @@
     <li th:text="'队伍ID：'+${group.groupId}"></li>
     <li th:text="'队伍名称：'+${group.groupName}"></li>
     <li th:text="'队伍创建时间：'+${#dates.format(group.establishDate,'yyyy-MM-dd')}"></li>
+    <a th:if="${group.captainId}==${session.user.uid}" th:href="@{'/group/'+${group.getGroupId()}}">
+        管理我的队伍
+    </a>
 </ul>
-<a th:href="@{/group/setup}">创建队伍</a>|<a th:href="@{/group/apply}">申请入队</a>|
+<a th:href="@{/group/setup}">创建队伍</a>|<a th:href="@{/groupping}">申请入队</a>|
 <a th:href="@{/}">返回首页</a>
 </body>
 </html>
