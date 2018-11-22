@@ -55,6 +55,6 @@ public class GrouppingRepository {
      * @return
      */
     private List<Groupping> getByOrder(Integer page, Integer rows) {
-        return jdbc.query("select gi.gid, gi.max_size,gi.cur_size,g.");
+        return null;
     }
 }
