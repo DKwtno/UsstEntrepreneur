@@ -5,6 +5,7 @@
     <title>查看组队信息</title>
 </head>
 <body>
+<p>查看组队信息</p>
 <!--/*@thymesVar id="grouppingdata" type="java.util.List<com.usst.demo.vo.Groupping>"*/-->
 <ul th:each="groupping:${grouppingdata}">
     <li th:text="'队伍编号：'+${groupping.groupId}"></li>

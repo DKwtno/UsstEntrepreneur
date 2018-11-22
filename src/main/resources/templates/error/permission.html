@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>权限错误</title>
+</head>
+<body>
+<h3>访问权限受限！</h3>
+<!--/*@thymesVar id="msg" type="com.usst.demo.util.Message"*/-->
+<p th:text="'详细信息：'+${msg.message}"></p>
+</body>
+</html>

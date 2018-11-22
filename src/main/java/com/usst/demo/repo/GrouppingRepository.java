@@ -26,6 +26,10 @@ public class GrouppingRepository {
         this.jdbc = jdbc;
     }
 
+    @Autowired
+    private FieldTagRepository fieldTagRepository;
+    @Autowired
+    private PersonalityTagRepository personalityTagRepository;
     /**
      * 返回数据库中的groupping_info有多少
      * @return
@@ -129,12 +133,12 @@ public class GrouppingRepository {
         int size = rows;
         if(end>finsize)
             size = (int)(finsize-start);
-        if(size<=0)
+        if(size<0)
             throw new RuntimeException("页数/行数错误！");
         int finalSize = size;
         List<Groupping> tmp = jdbc.query("select gp.gid,gp.maxsize,gp.cursize,gi.name " +
                 "from groupping_info gp inner join group_info gi " +
-                "on gp.gid=gi.gid order by gi.update_date limit ?,?;", new PreparedStatementSetter() {
+                "on gp.gid=gi.gid order by gp.update_date limit ?,?;", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setInt(1, start);
@@ -147,41 +151,9 @@ public class GrouppingRepository {
             }
         });
         for(Groupping groupping:tmp){
-            groupping.setPersonalTags(jdbc.query("select t.tid,t.name,t.ptype from " +
-                    "groupping_personalitytag_taken g inner join personality_tag t " +
-                    "on g.tid=t.tid where g.grouping_id=?", new PreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps) throws SQLException {
-                    ps.setInt(1, groupping.getGroupId());
-                }
-            }, new RowMapper<Tag>() {
-                @Override
-                public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return getTag(rs);
-                }
-            }));
-            groupping.setFieldTags(jdbc.query("select t.tid,t.name,t.ptype from " +
-                    "group_fieldtag_taken g inner join field_tag t " +
-                    "on g.tid=t.tid where g.group_id=?", new PreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps) throws SQLException {
-                    ps.setInt(1, groupping.getGroupId());
-                }
-            }, new RowMapper<Tag>() {
-                @Override
-                public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return getTag(rs);
-                }
-            }));
+            groupping.setPersonalTags(personalityTagRepository.getTagsByGroupId(groupping.getGroupId()));
+            groupping.setFieldTags(fieldTagRepository.getTagsByGroupId(groupping.getGroupId()));
         }
         return tmp;
-    }
-
-    public static Tag getTag(ResultSet rs) throws SQLException {
-        Tag tag = new Tag();
-        tag.setTagId(rs.getInt(1));
-        tag.setTagName(rs.getString(2));
-        tag.setType(rs.getInt(3));
-        return tag;
     }
 }

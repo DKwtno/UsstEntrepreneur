@@ -32,6 +32,20 @@ public class FieldTagRepository {
         });
     }
 
+    public List<Tag> getTagsByGroupId(Integer groupId){
+        return jdbc.query("select gf.tid,t.name,t.ftype from group_fieldtag_taken gf " +
+                "inner join field_tag t on gf.tid=t.tid where gf.group_id=?;", new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1,groupId);
+            }
+        }, new RowMapper<Tag>() {
+            @Override
+            public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return Tag.getTag(rs);
+            }
+        });
+    }
     public void saveNewTag(Tag tag){
         jdbc.update(new PreparedStatementCreator() {
             @Override

@@ -4,6 +4,7 @@ import com.usst.demo.vo.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,21 @@ public class PersonalityTagRepository {
             }
         });
     }
-
+    public List<Tag> getTagsByGroupId(Integer groupId){
+        return jdbc.query("select t.tid,t.name,t.ptype from " +
+                "groupping_personalitytag_taken g inner join personality_tag t " +
+                "on g.tid=t.tid where g.grouping_id=?", new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1, groupId);
+            }
+        }, new RowMapper<Tag>() {
+            @Override
+            public Tag mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return Tag.getTag(rs);
+            }
+        });
+    }
 
     public void saveNewTag(Tag tag){
         jdbc.update(new PreparedStatementCreator() {

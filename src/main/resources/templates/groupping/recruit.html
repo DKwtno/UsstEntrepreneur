@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>发布组队信息</title>
+</head>
+<body>
+<!--/*@thymesVar id="group" type="com.usst.demo.vo.Group"*/-->
+<form th:action="@{'/groupping/'+${group.groupId}+'/recruit'}" method="post">
+    <label th:text="'队伍ID：'+${group.groupId}"></label><br>
+    <input type="hidden" th:name="groupId" th:value="${group.groupId}">
+    <input type="hidden" th:name="groupName" th:value="${group.groupName}">
+    <input type="hidden" th:name="currentSize" th:value="${group.members.size()}">
+    <input type="hidden" th:name="fieldTags" th:value="${group.fieldTags}">
+    <label th:text="'队伍名称：'+${group.groupName}"></label><br>
+    <label th:text="'当前人数：'+${group.members.size()}"></label><br>
+    <div th:text="'队伍领域标签：'">
+        <ul th:each="tag:${group.fieldTags}">
+            <li th:text="${tag.tagId}+':'+${tag.tagName}"></li>
+        </ul>
+    </div>
+    <div>对队员的要求：<textarea th:name="demand"></textarea></div>
+    <div>队伍预期规模：<input th:type="Integer" th:name="maxSize"></div>
+    <!-- 传personalTags的时候好像只能传tagname，之后可以尝试下直接用变量来填充th:value -->
+    <input type="checkbox" th:name="personalTags" th:value="计算机">
+    <input type="checkbox" th:name="personalTags" th:value="测试">
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>

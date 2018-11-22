@@ -12,6 +12,15 @@ public class Group {
     private String status;
     private List<User> members;
     private String introduction;
+    private List<Tag> fieldTags;
+
+    public List<Tag> getFieldTags() {
+        return fieldTags;
+    }
+
+    public void setFieldTags(List<Tag> fieldTags) {
+        this.fieldTags = fieldTags;
+    }
 
     public List<User> getMembers() {
         return members;

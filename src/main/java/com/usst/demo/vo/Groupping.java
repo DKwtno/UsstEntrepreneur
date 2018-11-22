@@ -1,13 +1,24 @@
 package com.usst.demo.vo;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class Groupping {
+    @NotNull
     private String groupName;
+    @NotNull
     private Integer groupId;
+    @Length(max = 300)
     private String demand;//对队员的要求
     private String introduction;
-    private Integer currentSize,maxSize;
+    @Min(1)
+    private Integer currentSize;
+    @Min(2)
+    private Integer maxSize;
     private List<Tag> fieldTags,personalTags;//涉及的领域和需求的人物性格
 
     public Integer getCurrentSize() {

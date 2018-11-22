@@ -2,6 +2,7 @@ package com.usst.demo.web.group;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.usst.demo.repo.GroupRepository;
+import com.usst.demo.util.Message;
 import com.usst.demo.vo.Group;
 import com.usst.demo.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,11 +41,15 @@ public class GroupController {
     }
 
     @RequestMapping(value = "/{gid}" , method = RequestMethod.GET)
-    public String manageMyGroup(HttpServletRequest request, @PathVariable("gid") Integer groupId){
+    public String manageMyGroup(Model model, HttpServletRequest request, @PathVariable("gid") Integer groupId){
         Group group = groupRepository.findGroupByGroupId(groupId);
         if(!checkLogin(request, group.getCaptainId())){
-            return "redirect:/register";
+            Message message = new Message(Message.PERMISSION_LIMITED,"只有队长有该操作权限！");
+            model.addAttribute("msg",message);
+            return "/error/permission.html";
         }
+        model.addAttribute("mygroup",group);
+        model.addAttribute("members",group.getMembers());
         return "/group/manageGroup.html";
     }
 

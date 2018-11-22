@@ -5,10 +5,30 @@
     <title>管理我的组队</title>
 </head>
 <body>
-<!-- 这里显示组队成员信息 -->
+<p>管理我的队伍</p>
+<!--/*@thymesVar id="members" type="java.util.List<com.usst.demo.vo.User>"*/-->
 
-<a th:href="">发布招人信息</a>|
-<a th:href="">邀请成员组队</a>|
-<a th:href="">解散小队</a>
+<!--/*@thymesVar id="mygroup" type="com.usst.demo.vo.Group"*/-->
+<p th:text="'队伍ID：'+${mygroup.groupId}"></p>
+<p th:text="'队伍名称：'+${mygroup.groupName}"></p>
+<p th:text="'队伍建立时间：'+${#dates.format(mygroup.establishDate,'yyyy-MM-dd')}"></p>
+<p th:text="'队伍简介：'+${mygroup.introduction}"></p>
+<ul th:each="tag:${mygroup.fieldTags}">
+    <li th:text="'标签编号'+${tag.tagId}"></li>
+    <li th:text="'标签名'+${tag.tagName}"></li>
+</ul>
+
+<hr>
+<ul th:each="member:${members}">
+    <li th:text="'用户ID：'+${member.uid}"></li>
+    <li th:text="'用户名：'+${member.username}"></li>
+    <li th:text="'用户昵称：'+${member.nickName}"></li>
+    <a th:href="@{/}">踢出该队</a>
+    <a th:if="${member.uid}!=${session.user.uid}" th:href="@{/}">|转让队长</a>
+</ul>
+<hr>
+<a th:href="@{'/groupping/'+${mygroup.groupId}+'/recruit'}">发布招人信息</a>|
+<a th:href="@{/}">邀请成员组队</a>|
+<a th:href="@{/}">解散小队</a>
 </body>
 </html>

@@ -25,14 +25,17 @@ public class GroupRepository {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private FieldTagRepository fieldTagRepository;
+
+    @Autowired
     public GroupRepository(JdbcTemplate jdbc){
         this.jdbc = jdbc;
     }
 
     public Group findGroupByGroupId(Integer groupId){
 
-        List<Group> list = jdbc.query("select gid,`name`,abstract,establist_date,captain_id," +
-                "cursize from group_info where gid=? ", new PreparedStatementSetter() {
+        List<Group> list = jdbc.query("select gid,`name`,abstract,establish_date,captain_id " +
+                "from group_info where gid=?;", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setInt(1,groupId);
@@ -51,12 +54,13 @@ public class GroupRepository {
         });
         if(list.size()==1){
             list.get(0).setMembers(findMemebersByGroupId(groupId));
+            list.get(0).setFieldTags(fieldTagRepository.getTagsByGroupId(groupId));
         }
         return list==null||list.size()==0?null:list.get(0);
     }
 
     public List<Group> findAgreedGroupsByUserId(Integer userId){
-        return jdbc.query("select g.gid, g.name, g.captain_id,g.establish_date from " +
+        List<Group> groups = jdbc.query("select g.gid, g.name, g.captain_id,g.establish_date from " +
                 "group_info g inner join group_user_taken gu on g.gid=gu.gid where gu.uid=? " +
                 "and gu.stat='agreed'", new PreparedStatementSetter() {
             @Override
@@ -69,6 +73,10 @@ public class GroupRepository {
                 return getGroup(rs);
             }
         });
+        for(Group group:groups){
+            group.setFieldTags(fieldTagRepository.getTagsByGroupId(group.getGroupId()));
+        }
+        return groups;
     }
 
     private Group getGroup(ResultSet rs) throws SQLException {
