@@ -3,10 +3,12 @@ package com.usst.demo.vo;
 import java.util.List;
 
 public class Groupping {
-    private String groupName,groupId;
+    private String groupName;
+    private Integer groupId;
     private String demand;//对队员的要求
     private String introduction;
     private Integer currentSize,maxSize;
+    private List<Tag> fieldTags,personalTags;//涉及的领域和需求的人物性格
 
     public Integer getCurrentSize() {
         return currentSize;
@@ -24,8 +26,6 @@ public class Groupping {
         this.maxSize = maxSize;
     }
 
-    private List<Tag> fieldTags,personalTags;//涉及的领域和需求的人物性格
-
     public String getGroupName() {
         return groupName;
     }
@@ -34,11 +34,11 @@ public class Groupping {
         this.groupName = groupName;
     }
 
-    public String getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 

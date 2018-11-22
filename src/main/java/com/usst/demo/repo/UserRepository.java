@@ -20,6 +20,32 @@ public class UserRepository {
     public UserRepository(JdbcTemplate jdbc){
         this.jdbc = jdbc;
     }
+
+    public User findByUserId(Integer userId){
+        List<User> list = jdbc.query("select uid,username,password,nickname " +
+                "from user_basic where uid=?", new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1,userId);
+            }
+        }, new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return getUser(rs);
+            }
+        });
+        return list==null||list.size()==0?null:list.get(0);
+    }
+
+    private User getUser(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setUid(rs.getInt(1));
+        user.setUsername(rs.getString(2));
+        user.setPassword(rs.getString(3));
+        user.setNickName(rs.getString(4));
+        return user;
+    }
+
     public User findByUserName(String userName){
         List<User> list = jdbc.query("select uid,username,password,nickname " +
                 "from user_basic where username=?", new PreparedStatementSetter() {
@@ -30,12 +56,7 @@ public class UserRepository {
         }, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                User user = new User();
-                user.setUid(rs.getInt(1));
-                user.setUsername(rs.getString(2));
-                user.setPassword(rs.getString(3));
-                user.setNickName(rs.getString(4));
-                return user;
+                return getUser(rs);
             }
         });
         return list==null||list.size()==0?null:list.get(0);

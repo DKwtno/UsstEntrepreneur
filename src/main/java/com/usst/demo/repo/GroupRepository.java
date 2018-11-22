@@ -2,6 +2,7 @@ package com.usst.demo.repo;
 
 import com.usst.demo.vo.Group;
 import com.usst.demo.vo.GroupApplying;
+import com.usst.demo.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ import java.util.List;
 @Repository
 public class GroupRepository {
     private JdbcTemplate jdbc;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     public GroupRepository(JdbcTemplate jdbc){
         this.jdbc = jdbc;
@@ -55,20 +59,24 @@ public class GroupRepository {
      * @param groupId
      * @return 找小组的组员
      */
-    public List<Group> findAgreedGroupsByGroupId(Integer groupId){
-        return jdbc.query("select g.gid, g.name, g.captain_id from " +
-                "group_info g inner join group_user_taken gu on g.gid=gu.gid where gu.gid=? " +
+    public List<User> findMemebersByGroupId(Integer groupId){
+        List<Integer> userIds = jdbc.query("select gu.uid from " +
+                "group_user_taken gu where gu.gid=? " +
                 "and gu.stat='agreed'", new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setString(1, groupId.toString());
+                ps.setInt(1,groupId);
             }
-        }, new RowMapper<Group>() {
+        }, new RowMapper<Integer>() {
             @Override
-            public Group mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return getGroup(rs);
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
             }
         });
+        List<User> users = new ArrayList<>();
+        for(Integer uid:userIds)
+            users.add(userRepository.findByUserId(uid));
+        return users;
     }
     public List<GroupApplying> findApplyingGroupsByGroupId(Integer groupId){
         return jdbc.query("select gu.gid,gu.uid from " +
@@ -88,6 +96,12 @@ public class GroupRepository {
             }
         });
     }
+
+    /**
+     * 查找用户正在申请的小组
+     * @param userId
+     * @return
+     */
     public List<GroupApplying> findApplyingGroupsByUserId(Integer userId){
         return jdbc.query("select gu.gid,gu.uid from " +
                 " group_user_taken gu where gu.uid=? " +

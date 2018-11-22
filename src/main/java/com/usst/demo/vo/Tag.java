@@ -40,10 +40,6 @@ public class Tag {
     }
 
     public static Tag getTag(ResultSet rs) throws SQLException {
-        Tag tag = new Tag();
-        tag.setTagId(rs.getInt(1));
-        tag.setTagName(rs.getString(2));
-        tag.setType(rs.getInt(3));
-        return tag;
+        return getTag(rs);
     }
 }
