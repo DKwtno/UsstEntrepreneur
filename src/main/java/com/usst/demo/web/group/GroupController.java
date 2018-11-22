@@ -17,6 +17,9 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 考虑使用AOP对每一个名为doXXX的方法调用前都检查session中是否包含User
+ */
 @Controller
 @RequestMapping({"/user/{uid}/group","/group"})
 public class GroupController {
@@ -24,7 +27,12 @@ public class GroupController {
     GroupRepository groupRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String myGroup(@PathVariable("uid")Integer userId, Model model){
+    public String myGroup(@PathVariable("uid")Integer userId, Model model, HttpServletRequest request){
+        User user = (User)(request.getSession().getAttribute("user"));
+        if(user==null || user.getUid()!=userId){
+            //错误访问
+            return "redirect:/";
+        }
         List<Group> groups = groupRepository.findAgreedGroupsByUserId(userId);
         model.addAttribute("grouplist", groups);
         return "/group/mygroup.html";

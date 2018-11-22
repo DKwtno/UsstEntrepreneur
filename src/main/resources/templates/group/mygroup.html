@@ -6,12 +6,12 @@
 </head>
 <body>
 <p>我加入的队伍：</p>
-<!--/*@thymesVar id="groups" type="java.util.List<com.usst.demo.vo.Group>"*/-->
-<ul th:each="group:${groups}">
-    <li th:text="'队长ID'+${group.captainId}"></li>
-    <li th:text="'队伍ID'+${group.groupId}"></li>
-    <li th:text="'队伍名称'+${group.groupName}"></li>
-    <li th:text="'队伍创建时间'+${#dates.format(group.establishDate,'yyyy-MM-dd')}"></li>
+<!--/*@thymesVar id="grouplist" type="java.util.List<com.usst.demo.vo.Group>"*/-->
+<ul th:each="group:${grouplist}">
+    <li th:text="'队长ID：'+${group.captainId}"></li>
+    <li th:text="'队伍ID：'+${group.groupId}"></li>
+    <li th:text="'队伍名称：'+${group.groupName}"></li>
+    <li th:text="'队伍创建时间：'+${#dates.format(group.establishDate,'yyyy-MM-dd')}"></li>
 </ul>
 <a th:href="@{/group/setup}">创建队伍</a>|<a th:href="@{/group/apply}">申请入队</a>|
 <a th:href="@{/}">返回首页</a>

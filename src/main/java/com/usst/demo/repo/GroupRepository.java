@@ -26,7 +26,7 @@ public class GroupRepository {
     }
 
     public List<Group> findAgreedGroupsByUserId(Integer userId){
-        return jdbc.query("select g.gid, g.name, g.captain_id from " +
+        return jdbc.query("select g.gid, g.name, g.captain_id,g.establish_date from " +
                 "group_info g inner join group_user_taken gu on g.gid=gu.gid where gu.uid=? " +
                 "and gu.stat='agreed'", new PreparedStatementSetter() {
             @Override
@@ -46,6 +46,7 @@ public class GroupRepository {
         group.setGroupId(rs.getInt(1));
         group.setGroupName(rs.getString(2));
         group.setCaptainId(rs.getInt(3));
+        group.setEstablishDate(rs.getDate(4));
         return group;
     }
 
@@ -106,6 +107,8 @@ public class GroupRepository {
         });
     }
     public void createGroup(Group group){
-
+        jdbc.update("insert into group_info(`name`, abstract, establish_date, captain_id) " +
+                "values(?,?,?,?)", group.getGroupName(),group.getIntroduction(),group.getEstablishDate(),
+                group.getCaptainId());
     }
 }
